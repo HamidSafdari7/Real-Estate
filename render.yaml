@@ -1,4 +1,3 @@
-yaml
 services:
   - name: web
     type: docker
