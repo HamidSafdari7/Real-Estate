@@ -1,0 +1,7 @@
+yaml
+services:
+  - name: web
+    type: docker
+    plan: starter
+    buildCommand: docker build -t $DOCKER_IMG_NAME . --build-arg APP_ENV=production
+    startCommand: docker run -p 8080:80 $DOCKER_IMG_NAME
