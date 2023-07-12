@@ -6,7 +6,7 @@ services:
     startCommand: docker run -p 8080:80 $DOCKER_IMG_NAME
     dockerfile: Dockerfile
     env:
-      - key: APP_ENV
-        value: production
+      - key: COMPOSER_MEMORY_LIMIT
+        value: -1
     build:
       image: php:8.1-apache
