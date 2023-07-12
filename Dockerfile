@@ -1,5 +1,6 @@
 # Use the official PHP image as the base image
-FROM php:8.2.4-apache
+ARG APP_ENV=production
+FROM php:8.1-apache
 
 # Set the working directory inside the container
 WORKDIR /var/www/html

@@ -9,4 +9,4 @@ services:
       - key: APP_ENV
         value: production
     build:
-      image: php:8.2.4-apache
+      image: php:8.1-apache
