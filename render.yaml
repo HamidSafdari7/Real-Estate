@@ -4,3 +4,9 @@ services:
     plan: starter
     buildCommand: docker build -t $DOCKER_IMG_NAME . --build-arg APP_ENV=production
     startCommand: docker run -p 8080:80 $DOCKER_IMG_NAME
+    dockerfile: Dockerfile
+    env:
+      - key: APP_ENV
+        value: production
+    build:
+      image: php:8.2.4-apache
