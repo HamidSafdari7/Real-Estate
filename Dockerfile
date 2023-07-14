@@ -21,7 +21,7 @@ COPY . .
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install project dependencies
-RUN composer install --optimize-autoloader --no-dev
+RUN /use/local/bin/composer install --optimize-autoloader --no-dev
 
 # Generate the application key
 RUN php artisan key:generate
