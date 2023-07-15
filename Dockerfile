@@ -1,33 +1,26 @@
-# Use the official PHP image as the base image
-ARG APP_ENV=production
 FROM php:8.1-apache
 
-# Set the working directory inside the container
-WORKDIR /var/www/html
+RUN apt-get update && apt-get install -y  \
+    libmagickwand-dev \
+    --no-install-recommends \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick opcache \
+    && docker-php-ext-install pdo_mysql \
+    && apt-get autoclean -y \
+    && rm -rf /var/lib/apt/lists/* 
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    zip \
-    unzip
+# Update apache conf to point to application public directory
+ENV APACHE_DOCUMENT_ROOT=/var/www/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql
+# Update uploads config
+RUN echo "file_uploads = On\n" \
+         "memory_limit = 1024M\n" \
+         "upload_max_filesize = 512M\n" \
+         "post_max_size = 512M\n" \
+         "max_execution_time = 1200\n" \
+         > /usr/local/etc/php/conf.d/uploads.ini
 
-# Copy the codebase into the container
-COPY . .
-
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Install project dependencies
-RUN /use/local/bin/composer install --optimize-autoloader --no-dev
-
-# Generate the application key
-RUN php artisan key:generate
-
-# Expose port 80
-EXPOSE 80
-
-# Start Apache server
-CMD ["apache2-foreground"]
+# Enable headers module
+RUN a2enmod rewrite headers 
